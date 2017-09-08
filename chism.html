@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<title>看见什么吃什么~</title>
+	<meta name="description" content="hey boy挑什么，看见什么吃什么" />
+	<!-- <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"> -->
+</head>
+
+<style type="text/css">
+	* {
+		margin: 0;
+		padding: 0;
+	}
+
+	#btn {
+		position: fixed;
+		left: 50%;
+		top: 50%;
+		transform: translate(-50%);
+		width: 30rem;
+		height: 5rem;
+		line-height: 5rem;
+		font-size: 3rem;
+		border: 1px solid #ffd70d;
+		border-radius: 50px;
+		text-align: center;
+		color: #ffd70d;
+		cursor: pointer;
+		user-select: none;
+		z-index: 99999;
+		background-color: #fff;
+	}
+	#view{
+		position: fixed;
+		left: 50%;
+		top: 70%;
+		transform: translate(-50%);
+		font-size: 2rem;
+		color: #000;
+		white-space: nowrap;
+	}
+	.eat {
+		position: fixed;
+		font-size: 40px;
+		white-space: nowrap;
+		transition: all 0.3s;
+	}
+</style>
+
+<body>
+	<div id="box">
+		<div id="btn">吃什么呢吃什么呢</div>
+		<div id="view"></div>
+	</div>
+</body>
+<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+
+<script type="text/javascript">
+	$(document).ready(function () {
+
+		var lat
+		var lng
+		(function getLocation(cb) {
+			if (navigator.geolocation) {
+				navigator.geolocation.getCurrentPosition(showPosition);
+			} else {
+				console.log('该设备不支持获取地理位置...')
+			}
+			function showPosition(position) {
+				lat = position.coords.latitude||39.925646799999996,
+					lng = position.coords.longitude||116.51253949999999;
+
+	
+			}
+		})()
+		lat = lat||39.925646799999996,
+					lng = lng||116.51253949999999;
+		console.log(lat,lng)
+		var isClick=true;
+		var dataList = []
+		for (var i = 0; i < 4; i++) {
+			url = `https://www.ele.me/restapi/shopping/restaurants?extras%5B%5D=activities&geohash=wx4g5kqn3&latitude=${lat}&limit=30&longitude=${lng}&offset=${i * 30}&terminal=web`
+			$.getJSON(url, function (data) {
+				for (i in data) {
+					var name = data[i].name
+					dataList.push(name)
+				}
+				console.log(dataList)
+			})
+		}
+		// console.log(dataList)
+		$('#btn').click(function () {
+			
+			
+			if(isClick){
+
+				time = setInterval(function () {
+
+					var random = Math.round(Math.random() * dataList.length)
+					var rc = Math.round(Math.random() * 255)
+					var rc2 = Math.round(Math.random() * 255)
+					var rc3 = Math.round(Math.random() * 255)
+
+					$(`<span class='eat'>${dataList[random]}</span>`).css({
+						'top': Math.round(Math.random() * $(document).height()) + 'px',
+						'right': Math.round(Math.random() * $(document).width()) + 'px',
+						'font-size': Math.round(Math.random() * 40 + 12),
+						'color': `rgba(${rc},${rc2},${rc3},${Math.random()})`
+					}).appendTo('#box').fadeIn('slow',function(){
+						$(this).fadeOut('slow',function(){
+							$(this).remove()
+						})
+					})
+				$('#view').html(`${dataList[random]}`)
+					
+				},50)
+
+				isClick=false
+				$('#btn').html('停止')
+			}else{
+				clearInterval(time)
+				console.log('不能开始')
+				$('#btn').html('哎呀，再选一次~')
+				
+				isClick=true
+			}
+			
+
+
+		})
+		window.addEventListener('deviceorientation', function (e) {
+			if (e.beta > -120 && e.beta < -60) {
+				alert('啊~居然被你找到了！')
+			}
+		});
+	})
+
+</script>
+
+</html>
