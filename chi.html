@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>看见什么吃什么~</title>
+  <meta name="description" content="hey boy挑什么，看见什么吃什么" />
+  <link ref="./index.css">
+  <!-- <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"> -->
+</head>
+
+<style type="text/css">
+  * {
+    margin: 0;
+    padding: 0;
+  }
+
+  .btn-music {
+    width: 2rem;
+    height: 2rem;
+    background-color: transparent;
+    position: fixed;
+    top: 1.5rem;
+    right: 1.5rem;
+    z-index: 999;
+    border: 0.125rem solid #fff;
+    /* border-radius: 50%; */
+    padding: 0;
+    animation: btnMusicAni 3s infinite linear;
+    background-color: #ccc;
+
+    i {
+      width: 2rem;
+      height: 2rem;
+      text-align: center;
+      line-height: 2rem;
+      color: #fff;
+      font-size: 1rem;
+      position: absolute;
+      top: -0.125rem;
+      left: -0.125rem;
+    }
+    
+  }
+
+  .btn-music.paused{
+    opacity: 0.4;
+    animation: none;
+  }
+
+  @keyframes btnMusicAni {
+    0% {
+      transform: rotate(0deg);
+    }
+
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  #btn {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%);
+    width: 30rem;
+    height: 5rem;
+    line-height: 5rem;
+    font-size: 3rem;
+    border: 1px solid #ffd70d;
+    border-radius: 50px;
+    text-align: center;
+    color: #ffd70d;
+    cursor: pointer;
+    user-select: none;
+    z-index: 99999;
+    background-color: #fff;
+  }
+
+  #view {
+    position: fixed;
+    left: 50%;
+    top: 70%;
+    transform: translate(-50%);
+    font-size: 2rem;
+    color: #000;
+    white-space: nowrap;
+  }
+
+  .eat {
+    position: fixed;
+    font-size: 40px;
+    white-space: nowrap;
+    transition: all 0.3s;
+  }
+</style>
+
+<body>
+  <div id="loading" style="background-color: #ffd70d;width:100%;height: 100%;position: fixed;">
+  </div>
+  <div id="box" style="display: none">
+    <div id="btn">吃什么呢吃什么呢</div>
+    <div id="view"></div>
+    <audio id="bgMusic">
+      <source src="bgm.mp3" type="audio/mpeg">
+    </audio>
+
+
+    <button class="btn-music">
+      <i class="icon-note"></i>
+    </button>
+  </div>
+</body>
+<script src="https://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+
+<script type="text/javascript">
+  $(document).ready(function () {
+    // $('#box').hide()
+    let [isClick, isPlayMusic, dataList] = [true, false, []]
+
+    $('#loading').click(() => {
+      $('#box').show()
+      $('#loading').hide()
+      $('#bgMusic')[0].play()
+      isPlayMusic = true
+    })
+
+    $('.btn-music').click(() => {
+
+      if (isPlayMusic) {
+          $('#bgMusic')[0].pause()
+          isPlayMusic = false
+          $('.btn-music').addClass('paused');
+
+      } else {
+          $('#bgMusic')[0].play()
+          isPlayMusic = true
+          $('.btn-music').removeClass('paused');
+
+      }
+    })
+
+
+
+    // var isClick = true;
+    // var dataList = []
+
+    function chekingData() {
+        if (dataList.length == 0) {
+          dataList = ["小笼包", "叉烧包", "奶黄芝麻豆沙包", "大肉包", "菜包", "灌汤包", "北京烤鸭", "麻婆豆腐", "蒜泥白肉", "担担面", "酸辣粉", "炸酱面", "兰州拉面", "鄱阳湖闸蟹", "海南文昌鸡", "烤乳猪", "东坡肉", "拔丝土豆", "云吞面", "麻辣烫", "羊肉串", "蟹壳黄", "烧卖糯米鸡", "爆劲牛肉丸", "油炸糕", "酱排骨", "黄金扬州炒饭", "驴肉火烧", "江米扣肉", "糖醋里脊", "老虎爪", "驴打滚臭豆腐", "四喜丸子", "鸭血粉丝汤", "过桥米线", "烩面", "煎饼果子", "番茄炒蛋", "云吞面", "麻辣烫", "羊肉串", "蟹壳黄", "凉糕", "热干面", "猪肉炖粉条", "回锅肉炖酸菜", "兰州烧饼"]
+        }
+        return dataList
+      }
+    $('#btn').click(function () {
+        // console.log(dataList.length==0)
+        chekingData()
+
+        if (isClick) {
+          time = setInterval(function () {
+            var random = Math.floor(Math.random() * dataList.length)
+            var rc = Math.round(Math.random() * 255)
+            var rc2 = Math.round(Math.random() * 255)
+            var rc3 = Math.round(Math.random() * 255)
+            $(`<span class='eat'>${dataList[random]}</span>`).css({
+              'top': Math.round(Math.random() * $(document).height()) + 'px',
+              'right': Math.round(Math.random() * $(document).width()) + 'px',
+              'font-size': Math.round(Math.random() * 40 + 12),
+              'color': `rgba(${rc},${rc2},${rc3},${Math.random()})`
+            }).appendTo('#box').fadeIn('slow', function () {
+              $(this).fadeOut('slow', function () {
+                $(this).remove()
+              })
+            })
+            $('#view').html(`${dataList[random]}`)
+          }, 20)
+          isClick = false
+          $('#btn').html('停止')
+        } else {
+          clearInterval(time)
+          console.log('不能开始')
+          $('#btn').html('哎呀，再选一次~')
+          isClick = true
+        }
+
+
+      })
+  })
+</script>
+
+</html>
