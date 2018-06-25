@@ -6,8 +6,7 @@
   <title>洛天依《千年食谱颂》</title>
   <meta name="description" content="hey boy挑什么，看见什么吃什么" />
   <link ref="./index.css">
-  <link rel="stylesheet"
-  href="animate.min.css">
+  <link rel="stylesheet" href="animate.min.css">
   <!-- <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"> -->
 </head>
 
@@ -15,9 +14,13 @@
   * {
     margin: 0;
     padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei",
+    SimSun, sans-serif;
   }
 
-  .loadingImg{
+
+  .loadingImg {
 
     width: 100%;
     height: 100%;
@@ -26,31 +29,45 @@
     background-repeat: no-repeat;
     background-size: cover; */
   }
-  .loadingTxt{
-    
+
+  .loadingTxt {
+
+    width: 100%;
     font-size: 6rem;
     position: fixed;
     top: 8rem;
     left: 50%;
-    margin-left: -50%;
+    transform: translateX(-50%);
     text-align: center;
-    
-  
-    
-  }
-  .loadingP{
-      background: linear-gradient(to right, red, blue);
-    -webkit-background-clip: text;
-    color: transparent;
-    }
 
-    .loadingP2{
-      top: 10rem;
-      right: 0;
-      background: linear-gradient(to right, red, blue);
+
+
+  }
+
+  .loadingP {
+    background: linear-gradient(to right, #3f3f42, #5c5368);
     -webkit-background-clip: text;
     color: transparent;
-    }
+    -webkit-text-stroke: 1px red;
+  }
+
+  .loadingP2 {
+    top: 10rem;
+    right: 0;
+    background: linear-gradient(to right, red, blue);
+    -webkit-background-clip: text;
+    color: transparent;
+  }
+
+  .singer {
+    position: fixed;
+    top: 1rem;
+    right: 8%;
+    font-size: 2rem;
+    color: #000;
+    white-space: nowrap;
+  }
+
   .btn-music {
     width: 2rem;
     height: 2rem;
@@ -120,6 +137,16 @@
     white-space: nowrap;
   }
 
+  #stop {
+    position: fixed;
+    left: 50%;
+    top: 85%;
+    transform: translate(-50%);
+    font-size: 2rem;
+    color: #000;
+    white-space: nowrap;
+  }
+
   .eat {
     position: fixed;
     font-size: 40px;
@@ -130,16 +157,17 @@
 
 <body>
   <div id="loading" style="">
-    <img  class="loadingImg" src="./images/loading.jpg" />
-    
+    <img class="loadingImg" src="./images/loading.jpg" />
+
     <div class="loadingTxt">
-        <p  class="animated infinite bounce loadingP">千年食谱颂</p>
-        <p class="animated infinite swing loadingP">吃什么呢吃什么呢？</p>
+      <p class="animated infinite bounce loadingP">千年食谱颂</p>
+      <p class="animated infinite bounce loadingP">今天吃什么呢？</p>
     </div>
   </div>
   <div id="box" style="display: none">
     <div id="btn">吃什么呢吃什么呢</div>
     <div id="view"></div>
+    <div id="stop">去网易云音乐听《千年食谱颂》</div>
     <audio id="bgMusic">
       <source src="./bgm.mp3" type="audio/mpeg">
     </audio>
@@ -148,7 +176,7 @@
     <button class="btn-music">
       <i class="icon-note"></i>
     </button>
-    <div>
+    <div class="singer">
       <span>洛天依《千年食谱颂》</span>
     </div>
   </div>
@@ -172,6 +200,7 @@
     // let [isClick, isPlayMusic, dataList] = [true, false, []]
     $('#loading').click(function () {
       $('#box').show()
+      $('#stop').hide()
       $('#loading').hide()
       $('#bgMusic')[0].play()
       isPlayMusic = true
@@ -206,7 +235,7 @@
           $(`<span class='eat'>${dataList[random]}</span>`).css({
             'top': Math.round(Math.random() * $(document).height()) + 'px',
             'right': Math.round(Math.random() * $(document).width()) + 'px',
-            'font-size': Math.round(Math.random() * 40 + 12),
+            'font-size': Math.round(Math.random() * 60 + 12),
             'color': `rgba(${rc},${rc2},${rc3},${Math.random()})`
           }).appendTo('#box').fadeIn('slow', function () {
             $(this).fadeOut('slow', function () {
@@ -217,10 +246,15 @@
         }, 20)
         isClick = false
         $('#btn').html('停止')
+        $('#stop').hide()
+        
+
       } else {
         clearInterval(time)
         console.log('不能开始')
         $('#btn').html('哎呀，再选一次~')
+        $('#stop').show()
+        $('#stop').addClass('animated flash')
         isClick = true
       }
     })
